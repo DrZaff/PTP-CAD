@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PTP Obstructive CAD (Symptoms)</title>
+
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon-180.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <meta name="theme-color" content="#050810" />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <main class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo-dot"></div>
+        <div>
+          <h1>Pre-test Probability (PTP): Obstructive CAD</h1>
+          <p class="subtitle">Symptomatic patients • Age + Sex + Symptom (Chest pain vs Dyspnea) • Optional CAC</p>
+        </div>
+      </div>
+
+      <button class="ghost-btn" id="openRefBtn" type="button">Reference image</button>
+    </header>
+
+    <section class="grid">
+      <section class="card">
+        <h2>Inputs</h2>
+
+        <div class="form">
+          <div class="field">
+            <label for="age">Age (years)</label>
+            <input id="age" type="number" inputmode="numeric" min="18" max="120" placeholder="e.g., 57" />
+            <div class="hint">Table uses age bands: 30–39, 40–49, 50–59, 60–69, 70+</div>
+          </div>
+
+          <div class="field">
+            <label for="sex">Sex</label>
+            <select id="sex">
+              <option value="" selected disabled>Select…</option>
+              <option value="men">Men</option>
+              <option value="women">Women</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="symptom">Primary symptom</label>
+            <select id="symptom">
+              <option value="" selected disabled>Select…</option>
+              <option value="chestPain">Chest pain</option>
+              <option value="dyspnea">Dyspnea</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="cac">CAC score (optional)</label>
+            <input id="cac" type="number" inputmode="numeric" min="0" max="10000" placeholder="e.g., 120" />
+            <div class="hint">If entered, the app shows CAC-based interpretation per the figure.</div>
+          </div>
+
+          <div class="actions">
+            <button id="calcBtn" class="primary">Calculate</button>
+            <button id="resetBtn" class="secondary" type="button">Reset</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Results</h2>
+
+        <div id="results" class="results">
+          <div class="empty">Enter inputs and tap <b>Calculate</b>.</div>
+        </div>
+
+        <div class="legend">
+          <div class="pill low">Low ≤15%</div>
+          <div class="pill high">Intermediate–High &gt;15%</div>
+        </div>
+      </section>
+    </section>
+
+    <section class="card">
+      <h2>Notes & Safety</h2>
+      <ul class="bullets" id="flags">
+        <li class="muted">No flags yet.</li>
+      </ul>
+
+      <div class="disclaimer">
+        <b>Disclaimer:</b> This tool is for educational and decision-support purposes only. It does not replace clinical judgment,
+        institutional guidelines, or specialist consultation.
+      </div>
+    </section>
+
+    <footer class="footer card">
+      <h2>References</h2>
+      <ol class="refs">
+        <li>
+          Juarez-Orozco LE, Saraste A, Capodanno D, et al. <i>Eur Heart J Cardiovasc Imaging</i>. 2019;20:1198–1207.
+        </li>
+        <li>
+          Winther S, Schmidt SE, Mayrhofer T, et al. <i>J Am Coll Cardiol</i>. 2020;76:2421–2432.
+        </li>
+      </ol>
+
+      <p class="muted small">
+        Data table values are transcribed from the guideline figure snapshot (age band × sex × symptom). CAC interpretation follows the figure’s CAC categories.
+      </p>
+    </footer>
+  </main>
+
+  <!-- Reference image modal -->
+  <div class="modal-overlay" id="refModal" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="refTitle">
+      <div class="modal-header">
+        <div>
+          <div class="modal-title" id="refTitle">Reference image</div>
+          <div class="modal-subtitle">2021 ACC/AHA Chest Pain Guideline figure (PTP obstructive CAD)</div>
+        </div>
+        <button class="modal-close" id="closeRefBtn" type="button" aria-label="Close">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <img class="ref-image" src="assets/ptp_reference.png" alt="ACC/AHA 2021 guideline figure: pretest probability of obstructive CAD by age, sex, symptoms, and CAC" />
+
+        <div class="modal-refs">
+          <h3>References</h3>
+          <ol>
+            <li>
+              2021 ACC/AHA Chest Pain Guideline. DOI:
+              <span class="mono">10.1161/CIR.0000000000001029</span>
+              (link: <span class="mono">https://doi.org/10.1161/CIR.0000000000001029</span>)
+            </li>
+            <li>
+              Juarez-Orozco LE, Saraste A, Capodanno D, et al. <i>Eur Heart J Cardiovasc Imaging</i>. 2019;20:1198–1207.
+            </li>
+            <li>
+              Winther S, Schmidt SE, Mayrhofer T, et al. <i>J Am Coll Cardiol</i>. 2020;76:2421–2432.
+            </li>
+          </ol>
+          <p class="muted small">
+            This tool transcribes table values from the guideline figure snapshot (age band × sex × symptom). CAC interpretation follows the figure’s CAC categories.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./serviceworker.js")
+          .catch(err => console.error("Service worker registration failed:", err));
+      });
+    }
+  </script>
+</body>
+</html>
