@@ -79,11 +79,6 @@
         <div id="results" class="results">
           <div class="empty">Enter inputs and tap <b>Calculate</b>.</div>
         </div>
-
-        <div class="legend">
-          <div class="pill low">Low ≤15%</div>
-          <div class="pill high">Intermediate–High &gt;15%</div>
-        </div>
       </section>
     </section>
 
@@ -157,7 +152,8 @@
   <script>
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./serviceworker.js")
+        // NOTE: version query forces browser to fetch the updated SW script
+        navigator.serviceWorker.register("./serviceworker.js?v=4")
           .catch(err => console.error("Service worker registration failed:", err));
       });
     }

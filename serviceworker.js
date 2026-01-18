@@ -1,4 +1,4 @@
-const CACHE_NAME = "ptp-cad-v1";
+const CACHE_NAME = "ptp-cad-v4"; // <-- bump version to force refresh
 const ASSETS = [
   "/",
   "/index.html",
@@ -12,7 +12,6 @@ const ASSETS = [
   "/icons/apple-touch-icon-180.png"
 ];
 
-// Cache-first strategy
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
