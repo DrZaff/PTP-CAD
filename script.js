@@ -83,26 +83,30 @@ function calculatePretestProbability({ ageYears, sex, symptom }) {
 
 /**
  * CAC interpretation per the figure snapshot.
+ * We map CAC buckets to probability ranges and a category for pill coloring:
+ * - ≤15% -> "low" (green)
+ * - >15–50% -> "intermediateHigh" (amber)
+ * - >50% -> "veryhigh" (red)
  */
 function interpretCAC(cacScore) {
   if (cacScore === null || cacScore === undefined || cacScore === "") return null;
   const n = Number(cacScore);
+
   if (!Number.isFinite(n) || n < 0) {
     return { ok: false, level: "bad", label: "Invalid CAC", detail: "CAC must be a number ≥ 0." };
   }
 
-  // Per the provided figure’s CAC categories. CAC=0 is not explicitly shown in the bar;
-  // we treat CAC=0 as the lowest-probability bucket for display purposes.
+  // CAC=0 isn't explicitly labeled in the bar; display as lowest-probability bucket.
   if (n === 0) {
-    return { ok: true, bucket: "0", ptpRange: "≤15%", level: "low", label: "CAC 0", detail: "Figure-style interpretation: CAC 0 → ≤15%." };
+    return { ok: true, bucket: "0", ptpRange: "≤15%", level: "low", label: "CAC 0" };
   }
   if (n >= 1 && n <= 99) {
-    return { ok: true, bucket: "1-99", ptpRange: "≤15%", level: "low", label: "CAC 1–99", detail: "CAC 1–99 → ≤15% (low)." };
+    return { ok: true, bucket: "1-99", ptpRange: "≤15%", level: "low", label: "CAC 1–99" };
   }
   if (n >= 100 && n <= 999) {
-    return { ok: true, bucket: "100-999", ptpRange: ">15–50%", level: "high", label: "CAC 100–999", detail: "CAC 100–999 → >15–50%." };
+    return { ok: true, bucket: "100-999", ptpRange: ">15–50%", level: "intermediateHigh", label: "CAC 100–999" };
   }
-  return { ok: true, bucket: ">=1000", ptpRange: ">50%", level: "veryhigh", label: "CAC ≥1000", detail: "CAC ≥1000 → >50%." };
+  return { ok: true, bucket: ">=1000", ptpRange: ">50%", level: "veryhigh", label: "CAC ≥1000" };
 }
 
 /* =========================
@@ -138,9 +142,14 @@ function badgeForCategory(category) {
   return `<span class="badge high">Intermediate–High &gt;15%</span>`;
 }
 
-function badgeForCACLevel(level) {
-  // User-facing legend for CAC-based probability buckets
-  return `<span class="badge high">Low ≤15%, Intermediate–High &gt;15%, and High &gt;50%</span>`;
+/**
+ * CAC pill: show ONLY the applicable interpretation, color-matched.
+ */
+function badgeForCACCategory(level) {
+  if (level === "low") return `<span class="badge low">Low ≤15%</span>`;
+  if (level === "veryhigh") return `<span class="badge veryhigh">High &gt;50%</span>`;
+  // intermediateHigh
+  return `<span class="badge high">Intermediate–High &gt;15%</span>`;
 }
 
 function renderFlags(flags) {
@@ -181,7 +190,6 @@ function renderResults(ptpObj, cacObj) {
           </div>
           <div><span class="badge veryhigh">Check CAC</span></div>
         </div>
-        <div class="muted small">${escapeHtml(cacObj.detail)}</div>
       `;
     } else {
       cacBlock = `
@@ -190,9 +198,8 @@ function renderResults(ptpObj, cacObj) {
             <div class="label">Pretest probability based on CAC score</div>
             <div class="value">${escapeHtml(cacObj.ptpRange)}</div>
           </div>
-          <div>${badgeForCACLevel(cacObj.level)}</div>
+          <div>${badgeForCACCategory(cacObj.level)}</div>
         </div>
-        <div class="muted small">CAC bucket: ${escapeHtml(cacObj.label)} • ${escapeHtml(cacObj.detail)}</div>
       `;
     }
   }
